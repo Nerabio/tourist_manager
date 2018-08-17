@@ -23,7 +23,7 @@ class m180802_122732_create_activity_table extends Migration
             'title' => $this->string()->notNull(),
             'description' => $this->string()->notNull(),
             'status_id' => $this->integer()->defaultValue(0),
-            'adress_id' => $this->integer()->defaultValue(null),
+            'adress_id' => $this->integer()->notNull(),
             'mark' => $this->string(),
             'color' => $this->string(7),
             'picture_url' => $this->string(),
