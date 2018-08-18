@@ -3,16 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Activity;
-use app\models\SearchActivity;
+use app\models\Address;
+use app\models\SearchAddress;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
+
 /**
- * ActivityController implements the CRUD actions for Activity model.
+ * AddressController implements the CRUD actions for Address model.
  */
-class ActivityController extends Controller
+class AddressController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -30,12 +30,12 @@ class ActivityController extends Controller
     }
 
     /**
-     * Lists all Activity models.
+     * Lists all Address models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchActivity();
+        $searchModel = new SearchAddress();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +45,7 @@ class ActivityController extends Controller
     }
 
     /**
-     * Displays a single Activity model.
+     * Displays a single Address model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -58,28 +58,16 @@ class ActivityController extends Controller
     }
 
     /**
-     * Creates a new Activity model.
+     * Creates a new Address model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Activity();
+        $model = new Address();
 
-        if($model->load(Yii::$app->request->post())){
-
-            //if(!empty(UploadedFile::getInstance($model, 'imageFile'))) {
-            if ($model->validate()) {
-                if(!empty(UploadedFile::getInstance($model, 'imageFile'))) {
-                    $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-                    $model->imageFile->saveAs('uploads/' . $model->imageFile->baseName . '.' . $model->imageFile->extension);
-                    $model->picture_url = 'uploads/' . $model->imageFile->baseName . '.' . $model->imageFile->extension;
-                }
-                $model->load(Yii::$app->request->post());
-            }
-            if($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -88,7 +76,7 @@ class ActivityController extends Controller
     }
 
     /**
-     * Updates an existing Activity model.
+     * Updates an existing Address model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -98,30 +86,17 @@ class ActivityController extends Controller
     {
         $model = $this->findModel($id);
 
-        //if ($model->load(Yii::$app->request->post())) {
-        if(Yii::$app->request->isPost){
-
-            //if(!empty(UploadedFile::getInstance($model, 'imageFile'))) {
-            if ($model->validate()) {
-                if(!empty(UploadedFile::getInstance($model, 'imageFile'))) {
-                    $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-                    $model->imageFile->saveAs('uploads/' . $model->imageFile->baseName . '.' . $model->imageFile->extension);
-                    $model->picture_url = 'uploads/' . $model->imageFile->baseName . '.' . $model->imageFile->extension;
-                }
-                $model->load(Yii::$app->request->post());
-            }
-            if($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
-            'model' => $model
+            'model' => $model,
         ]);
     }
 
     /**
-     * Deletes an existing Activity model.
+     * Deletes an existing Address model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -135,15 +110,15 @@ class ActivityController extends Controller
     }
 
     /**
-     * Finds the Activity model based on its primary key value.
+     * Finds the Address model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Activity the loaded model
+     * @return Address the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Activity::findOne($id)) !== null) {
+        if (($model = Address::findOne($id)) !== null) {
             return $model;
         }
 

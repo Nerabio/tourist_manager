@@ -50,7 +50,7 @@ $this->registerJs($script, yii\web\View::POS_END);
                         <?php endif;?>
                         <div class="thumbnail_favorite"><a class="btn btn-default btn-circle glyphicon glyphicon-heart" role="button"></a></div>
                         <h4><?= $activity->title;?></h4>
-                        <div class="thumbnail_adress">г. Климов, Рязанская область</div>
+                        <div class="thumbnail_adress"><?= $activity->adress->title;?></div>
                     </div>
                     <div class="thumbnail_footer"><p><span class="thumbnail_date"><?= DataHelper::renderDate($activity->date_start,$activity->date_end);?></span><a class="btn btn-default btn-circle pull-right glyphicon glyphicon-play close_btn" role="button"></a></div>
                 </div>

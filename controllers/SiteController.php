@@ -79,13 +79,15 @@ class SiteController extends Controller
             $favorite = null;
         }
 
-//        foreach($dataProvider->models as $activity){
-//            foreach($favorite as $fav) {
-//                if($activity->id == $fav->activity_id){
-//                    $activity->isFavorite = true;
-//                }
-//            }
-//        }
+        if(isset($favorite)){
+               foreach($dataProvider->models as $activity){
+                   foreach($favorite as $fav) {
+                       if($activity->id == $fav->activity_id){
+                           $activity->isFavorite = true;
+                       }
+                   }
+               }
+        }
 
 
         return $this->render('index', [

@@ -51,7 +51,7 @@ class Activity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'owner_user_id', 'description', 'date_start', 'date_end'], 'required'],
+            [['title', 'owner_user_id', 'description','adress_id', 'date_start', 'date_end'], 'required'],
             [['status_id', 'adress_id', 'look_counter', 'owner_user_id', 'creator_user_id', 'modyfy_user_id'], 'integer'],
             [['date_start', 'date_end', 'created_at', 'updated_at', 'mark', 'picture_url'], 'safe'],
             [['title', 'description', 'mark', 'picture_url'], 'string', 'max' => 255],
@@ -111,6 +111,14 @@ class Activity extends \yii\db\ActiveRecord
     public function getOwnerUser()
     {
         return $this->hasOne(User::className(), ['id' => 'owner_user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAdress()
+    {
+        return $this->hasOne(Address::className(), ['id' => 'adress_id']);
     }
 
     /**

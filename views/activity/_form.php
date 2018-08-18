@@ -2,6 +2,7 @@
 
 use app\models\helpers\DataHelper;
 use app\models\User;
+use app\models\Address;
 use kartik\widgets\ColorInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -15,7 +16,7 @@ use kartik\widgets\FileInput;
 /* @var $this yii\web\View */
 /* @var $model app\models\Activity */
 /* @var $form yii\widgets\ActiveForm */
-$dateRender =  DataHelper::renderDate($activity->date_start,$activity->date_end);
+$dateRender =  DataHelper::renderDate($model->date_start, $model->date_end);
 
 $script = <<< JS
     $(document).ready(function(){
@@ -26,9 +27,9 @@ $script = <<< JS
             App.color = App.getColor();
         });
 
-        $("div[id*='activity-date']").change(function(){
-            App.getDate($('#activity-date_start').val(), $('#activity-date_end').val());
-        });
+        //$("div[id*='activity-date']").change(function(){
+        //    App.getDate($('#activity-date_start').val(), $('#activity-date_end').val());
+        //});
 
 });
 
@@ -44,6 +45,7 @@ $script = <<< JS
         description: $('#activity-description').val(),
         datestart: $('#activity-date_start').val(),
         dateend: $('#activity-date_end').val(),
+        address: '{$model->adress->title}',
         renderDate: '{$dateRender}'
         },
 
@@ -81,8 +83,9 @@ $script = <<< JS
                         }
                     },
             toDate: function(dateStr) {
-              var parts = dateStr.split(".")
-              return new Date(parts[2], parts[1] - 1, parts[0])
+              var parts = dateStr.split("-")
+              //return new Date(parts[2], parts[1] - 1, parts[0])
+              return new Date(parts[0], parts[1] - 1, parts[2])
             }
         }
     });
@@ -94,21 +97,17 @@ $this->registerJsFile('\web\js\vue.js',  ['position' => yii\web\View::POS_END]);
 <div id="app">
 
 <div class="row row-flex">
-    <?php
-    /**
-     * @var $activity \app\models\Activity
-     */
-    $activity = $model; ?>
+
     <div class="col-sm-4 col-xs-12 col-md-3 col-lg-3">
         <div class="thumbnail" v-bind:style="{ backgroundColor: color}">
-            <div class="image"><img data-src="holder.js/100%x200" src="<?= $activity->getPictureUrl();?>" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"></div>
+            <div class="image"><img data-src="holder.js/100%x200" src="<?= $model->getPictureUrl();?>" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"></div>
             <div class="caption">
 
                     <div v-if = "mark != ''" class="thumbnail_mark">{{ mark }}</div>
 
                 <div class="thumbnail_favorite"><a class="btn btn-default btn-circle glyphicon glyphicon-heart" role="button"></a></div>
                 <h4>{{ title }}</h4>
-                <div class="thumbnail_adress">г. Климов, Рязанская область</div>
+                <div class="thumbnail_adress">{{ address }}</div>
             </div>
             <div class="thumbnail_footer"><p><span class="thumbnail_date">{{ renderDate }}</span><a class="btn btn-default btn-circle pull-right glyphicon glyphicon-play close_btn" role="button"></a></div>
         </div>
@@ -140,7 +139,40 @@ $this->registerJsFile('\web\js\vue.js',  ['position' => yii\web\View::POS_END]);
             ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'adress_id')->textInput() ?>
+               
+
+                        <?= $form->field($model, 'adress_id')->widget(Select2::classname(), [
+                            'data' => ArrayHelper::map(Address::find()->asArray()->all(), 'id', 'title'),
+                            'options' => ['placeholder' => 'Выбрать адрес'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                            'pluginEvents' => [
+                                'change' => "
+                                    function() { $(this).children(':selected').each(function(){
+                                        App.address = $(this).text();
+                                    });
+                                }"
+                            ],
+                            'addon' => [
+                                                //'prepend' => [
+                                                //    'content' => ''
+                                                //],
+                                            'append' => [
+                                                'content' => Html::a('+', ['address/create'], ['class' => 'btn btn-default']),
+                                                'asButton' => true
+                                            ]
+                                        ]
+                        ]);
+                        ?>
+                  
+                    
+                
+
+                 
+
+
+
         </div>
     </div>
 
@@ -190,9 +222,11 @@ $this->registerJsFile('\web\js\vue.js',  ['position' => yii\web\View::POS_END]);
             'options' => ['placeholder' => 'Начало мероприятия'],
             'pluginOptions' => [
                 'autoclose'=>true,
-                'format' => 'dd.mm.yyyy'
+                //'format' => 'dd.mm.yyyy'
+                'format' => 'yyyy-mm-dd'
                 //'value' => empty($model->date_of_birth) ? null : date("d/m/Y", strtotime($model->date_of_birth))
-            ]
+            ],
+            'pluginEvents' => ['changeDate' => "function(e) {  App.getDate($('#activity-date_start').val(), $('#activity-date_end').val()); }"]
         ]);
         ?>
     </div>
@@ -201,8 +235,9 @@ $this->registerJsFile('\web\js\vue.js',  ['position' => yii\web\View::POS_END]);
             'options' => ['placeholder' => 'Завершение мероприятия'],
             'pluginOptions' => [
                 'autoclose'=>true,
-                'format' => 'dd.mm.yyyy'
-            ]
+                'format' => 'yyyy-mm-dd'
+            ],
+            'pluginEvents' => ['changeDate' => "function(e) {  App.getDate($('#activity-date_start').val(), $('#activity-date_end').val()); }"]
         ]);
         ?>
     </div>

@@ -16,8 +16,8 @@ class m180809_115656_create_favorit_activity_table extends Migration
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
             'activity_id' => $this->integer()->notNull(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp()->defaultValue(null),
+            'created_at' => 'timestamp DEFAULT current_timestamp',
+            'updated_at' => 'timestamp DEFAULT current_timestamp ON UPDATE current_timestamp',
         ]);
 
         $this->createIndex('idx-favorit_activity_user_id', '{{%favorit_activity}}', 'user_id');

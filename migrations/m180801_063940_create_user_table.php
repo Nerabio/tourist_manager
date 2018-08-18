@@ -30,8 +30,8 @@ class m180801_063940_create_user_table extends Migration
             'role' => $this->smallInteger()->notNull()->defaultValue(0),
             'creator_user_id' => $this->integer()->defaultValue(null),
             'modyfy_user_id' => $this->integer()->defaultValue(null),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp()->defaultValue(null),
+            'created_at' => 'timestamp DEFAULT current_timestamp',
+            'updated_at' => 'timestamp DEFAULT current_timestamp ON UPDATE current_timestamp',
         ], $tableOptions);
 
         $this->createIndex('idx-user-username', '{{%user}}', 'username');

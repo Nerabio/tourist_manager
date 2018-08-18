@@ -33,8 +33,8 @@ class m180802_122732_create_activity_table extends Migration
             'modyfy_user_id' => $this->integer()->defaultValue(null),
             'date_start' => $this->timestamp()->defaultValue(null),
             'date_end' => $this->timestamp()->defaultValue(null),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp()->defaultValue(null),
+            'created_at' => 'timestamp DEFAULT current_timestamp',
+            'updated_at' => 'timestamp DEFAULT current_timestamp ON UPDATE current_timestamp',
         ], $tableOptions);
 
         $this->createIndex('idx-activity-title', '{{%activity}}', 'title');
